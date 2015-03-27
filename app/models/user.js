@@ -19,7 +19,7 @@ module.exports = function(sequelize, DataTypes) {
 			}
 		}).then(function(user) {
 			cb(null, user);
-		}).error(function(err) {
+		}).catch(function(err) {
 			return cb(err, null);
 		});
 	};

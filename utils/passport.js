@@ -13,7 +13,7 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(id, done) {
 	User.find(id).then(function(user) {
 		done(null, user);
-	}).error(function(err) {
+	}).catch(function(err) {
 		done(err, null);
 	});
 });
@@ -33,7 +33,7 @@ passport.use(new LocalStrategy(
 				return done(null, false);
 			}
 			return done(null, user);
-		}).error(function(err) {
+		}).catch(function(err) {
 			return done(err, false);
 		});
 	}

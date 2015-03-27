@@ -4,7 +4,10 @@ module.exports = {
 		username: "root",
 		password: "",
 		options: {
-			logging: false
+			logging: false,
+			sync:{
+				logging: false
+			}
 		}
 	}
 }

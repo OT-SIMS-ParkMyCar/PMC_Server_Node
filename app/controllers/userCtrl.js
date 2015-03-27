@@ -36,7 +36,7 @@ exports.signup = function(req, res) {
 		//Create new User
 		User.create(newUser).then(function(user) {
 			res.status(201).send(user);
-		}).error(errorManager.errorServer(res));
+		}).catch(errorManager.errorServer(res));
 	})
 }
 
@@ -48,7 +48,7 @@ exports.current = function(req, res) {
 exports.getFavorites = function(req, res) {
 	req.user.getFavorites().then(function (favorites) {
 		res.status(200).send(favorites);
-	}).error(errorManager.errorServer(res));
+	}).catch(errorManager.errorServer(res));
 };
 
 exports.addFavorite = function(req, res) {
@@ -65,7 +65,7 @@ exports.addFavorite = function(req, res) {
 
 	req.user.createFavorite(newFav).then(function (favorite) {
 		res.status(200).send(favorite);
-	}).error(errorManager.errorServer(res));
+	}).catch(errorManager.errorServer(res));
 };
 
 exports.removeFavorite = function(req, res) {
@@ -79,10 +79,10 @@ exports.removeFavorite = function(req, res) {
 			.then(function(){
 				res.status(200).send("Favorite removed");
 			})
-			.error(errorManager.errorServer(res));
+			.catch(errorManager.errorServer(res));
 
 			
-		}).error(errorManager.errorServer(res));
+		}).catch(errorManager.errorServer(res));
 	
-	}).error(errorManager.errorServer(res));
+	}).catch(errorManager.errorServer(res));
 };

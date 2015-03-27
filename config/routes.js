@@ -11,7 +11,7 @@ var userCtrl = require('../app/controllers/userCtrl');
 exports.api = function (app) {
 
 	app.post('/login', passport.authenticate('local'), userCtrl.signin);
-	app.post('/logout', passport.authenticate('local'), userCtrl.signout);
+	app.post('/logout', security.isConnected, userCtrl.signout);
 
 	app.post('/rest/users/signup', userCtrl.signup);
 	app.get('/rest/users/current', security.isConnected, userCtrl.current);

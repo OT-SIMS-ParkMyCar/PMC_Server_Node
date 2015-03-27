@@ -5,6 +5,8 @@ var fs = require('fs'),
 	db = {};
 
 var sequelize = new Sequelize(config.db.database, config.db.username, config.db.password, config.options);
+sequelize.sync({ logging: false })
+
 
 fs.readdirSync(__dirname).filter(function(file) {
 	return (file.indexOf('.') !== 0) && (file !== 'index.js');
@@ -18,6 +20,8 @@ Object.keys(db).forEach(function(modelName) {
 		db[modelName].associate(db);
 	}
 });
+
+
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

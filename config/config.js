@@ -1,56 +1,29 @@
 var env = process.env.NODE_ENV || 'development';
 
-var config = {
-  development: {
-    app: {
-      name: 'pmc-server-node'
-    },
-    port: 8080,
-    db: {
-      database: "pmc2",
-      username: "root",
-      password: "",
-      options: {
-        dialect: "mysql",
-        host: "localhost",
-        port: 3306
-      }
-    }
-  },
 
-  test: {
-    app: {
-      name: 'pmc-server-node'
-    },
-    port: 8080,
-    db: {
-      database: "pmc2",
-      username: "root",
-      password: "",
-      options: {
-        dialect: "mysql",
-        host: "localhost",
-        port: 3306
-      }
-    }
-  },
+var _ = require('lodash');
 
-  production: {
-    app: {
-      name: 'pmc-server-node'
-    },
-    port: 8080,
-    db: {
-      database: "pmc2",
-      username: "root",
-      password: "",
-      options: {
-        dialect: "mysql",
-        host: "localhost",
-        port: 3306
-      }
-    }
-  }
-};
+//Load default config
+var config = require('./environments/default');
 
-module.exports = config[env];
+//Update config with the environnement
+try{
+	switch(env){
+		case 'development':
+			_.assign(config, require('./environments/development'));
+			//If development update with the user config
+			_.assign(config, require('./environments/dev-user'));
+		break;
+		case 'test':
+			_.assign(config, require('./environments/test'));
+		break;
+		case 'production':
+			_.assign(config, require('./environments/production'));
+		break;
+	}
+}
+catch(err){
+	console.log("Config: " + err);
+}
+console.log(config);
+module.exports = config;

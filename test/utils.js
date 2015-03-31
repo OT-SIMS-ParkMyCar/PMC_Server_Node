@@ -36,5 +36,16 @@ module.exports = {
 			else console.log("DB clean");
 			cb();
 		});
+	},
+
+	createAndLogUser: function(api, cb){
+		api.post('/rest/users/signup')
+		.send({username:"testMan", password:"testPwd"})
+		.end(function(err){
+			if(err) return cb(err);
+			api.post('/login')
+			.send({username:"testMan", password:"testPwd"})
+			.end(cb);
+		});
 	}
 }

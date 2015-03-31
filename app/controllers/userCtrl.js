@@ -1,4 +1,5 @@
-var User = require('../models').User;
+
+var userService = require('../services/userService');
 
 var errorManager = require('../../utils/errorManager');
 
@@ -28,15 +29,16 @@ exports.signup = function(req, res) {
 
 
 	//Check if username doesn't exist
-	User.getUserByUsername(newUser.username, function(err, user) {
+	userService.getUserByUsername(newUser.username, function(err, user) {
 		if (err) return res.status(500).send(err);
 
 		if (user) return res.status(400).send("Username already exist");
 
 		//Create new User
-		User.create(newUser).then(function(user) {
-			res.status(201).send(user);
-		}).catch(errorManager.errorServer(res));
+		userService.createUser(newUser, function(err, userCreated) {
+			if(err) return errorManager.errorServer(err, res);
+			else res.status(201).send(userCreated);
+		});
 	})
 }
 
@@ -46,9 +48,10 @@ exports.current = function(req, res) {
 
 
 exports.getFavorites = function(req, res) {
-	req.user.getFavorites().then(function (favorites) {
-		res.status(200).send(favorites);
-	}).catch(errorManager.errorServer(res));
+	userService.getFavorites(req.user, function (err, favorites) {
+		if(err) return errorManager.errorServer(err, res);
+		else res.status(200).send(favorites);
+	});
 };
 
 exports.addFavorite = function(req, res) {
@@ -63,26 +66,23 @@ exports.addFavorite = function(req, res) {
 		return res.status(400).send("parameters not valid");
 	}
 
-	req.user.createFavorite(newFav).then(function (favorite) {
-		res.status(200).send(favorite);
-	}).catch(errorManager.errorServer(res));
+	userService.addFavorites(req.user, newFav, function (err, favorite) {
+		if(err) return errorManager.errorServer(err, res);
+		else res.status(200).send(favorite);
+	});
 };
 
 exports.removeFavorite = function(req, res) {
 
-	//get the favorite
-	req.user.getFavorites({where:{id: parseInt(req.params.idFavorite)}}).then(function (favorites) {
-		if(!favorites || favorites.length == 0) return res.status(404).send("favorite not found");
-
-		req.user.removeFavorite(favorites[0]).then(function () {
-			favorites[0].destroy()
-			.then(function(){
-				res.status(200).send("Favorite removed");
-			})
-			.catch(errorManager.errorServer(res));
-
-			
-		}).catch(errorManager.errorServer(res));
-	
-	}).catch(errorManager.errorServer(res));
+	userService.removeFavorite(user, req.params.idFavorite, function(err){
+		if(err){
+			if(err === userService.ServiceError.FAVORITE_NOT_FOUND){
+				return res.status(404).send("favorite not found");
+			}
+			else{
+				return errorManager.errorServer(err, res);
+			}
+		}
+		else res.status(200).send("Favorite removed");
+	});
 };

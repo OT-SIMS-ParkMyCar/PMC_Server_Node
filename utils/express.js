@@ -48,15 +48,13 @@ module.exports = function(app, config) {
 	//Add routes
 	require("../config/routes").api(app);
 
+	//If route not found
 	app.use(function(req, res, next) {
-		var err = new Error('Not Found');
-		err.status = 404;
-		next(err);
+		errorManager.routeNotFound(res);
 	});
 
-	if (app.get('env') === 'development') {
-		app.use(function(err, req, res, next) {
-			errorManager.errorServer(res)(err);
-		});
-	}
+	//If error during route works
+	app.use(function(err, req, res, next) {
+		errorManager.errorServer(res)(err);
+	});
 };

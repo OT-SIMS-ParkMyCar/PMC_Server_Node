@@ -1,15 +1,17 @@
 
 
-exports.errorServer = function(res){
+exports.errorServer = function(err, res){
 
-	var manager = function(err){
-		
-		console.log(err);
+	console.log(err);
 
-		if(res){
-			res.status(500).send("Server error");
-		}
-	};
+	if(res){
+		res.status(500).send("Server error");
+	}
+}
 
-	return manager;
+exports.routeNotFound = function(res){
+
+	if(res){
+		res.status(404).send("Route not found");
+	}
 }

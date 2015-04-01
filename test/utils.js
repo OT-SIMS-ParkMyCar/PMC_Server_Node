@@ -38,14 +38,23 @@ module.exports = {
 		});
 	},
 
-	createAndLogUser: function(api, cb){
+	createAndLoginUser: function(api, username, password, cb){
 		api.post('/rest/users/signup')
-		.send({username:"testMan", password:"testPwd"})
+		.send({username:username, password:password})
 		.end(function(err){
 			if(err) return cb(err);
-			api.post('/login')
-			.send({username:"testMan", password:"testPwd"})
-			.end(cb);
+			module.exports.loginUser(api, username, password, cb);
 		});
+	},
+
+	loginUser: function(api, username, password, cb){
+		api.post('/login')
+			.send({username:username, password:password})
+			.end(cb);
+	},
+
+	logoutUser:function(api, cb){
+		api.post('/logout')
+		.end(cb);
 	}
 }

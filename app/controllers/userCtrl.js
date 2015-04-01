@@ -66,7 +66,18 @@ exports.addFavorite = function(req, res) {
 		return res.status(400).send("parameters not valid");
 	}
 
-	userService.addFavorites(req.user, newFav, function (err, favorite) {
+	newFav.latitude = parseFloat(newFav.latitude);
+	newFav.longitude = parseFloat(newFav.longitude);
+	if(isNaN(newFav.latitude) || isNaN(newFav.longitude)){ //Check latitude and longitude
+		return res.status(400).send("longitude and latitude must be float");	
+	}
+
+	newFav.address = newFav.address.trim();
+	if(newFav.address === ""){
+		return res.status(400).send("need an address");		
+	}
+
+	userService.addFavorite(req.user, newFav, function (err, favorite) {
 		if(err) return errorManager.errorServer(err, res);
 		else res.status(200).send(favorite);
 	});
@@ -74,7 +85,7 @@ exports.addFavorite = function(req, res) {
 
 exports.removeFavorite = function(req, res) {
 
-	userService.removeFavorite(user, req.params.idFavorite, function(err){
+	userService.removeFavorite(req.user, req.params.idFavorite, function(err){
 		if(err){
 			if(err === userService.ServiceError.FAVORITE_NOT_FOUND){
 				return res.status(404).send("favorite not found");

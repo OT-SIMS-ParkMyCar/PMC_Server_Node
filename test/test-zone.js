@@ -4,7 +4,11 @@ var expect = require('chai').expect;
 var api = utils.initApiServer();
 
 before(function(next){
-	utils.createAndLogUser(api, next);
+	utils.createAndLoginUser(api, "testUsername", "testPassword", next);
+});
+
+after(function(next){
+	utils.logoutUser(api, next);
 });
 
 after(utils.cleanDB);

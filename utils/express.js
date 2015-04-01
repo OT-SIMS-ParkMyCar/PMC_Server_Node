@@ -55,6 +55,6 @@ module.exports = function(app, config) {
 
 	//If error during route works
 	app.use(function(err, req, res, next) {
-		errorManager.errorServer(res)(err);
+		errorManager.errorServer(err, res);
 	});
 };
